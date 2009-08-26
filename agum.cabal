@@ -1,0 +1,14 @@
+Name:			agum
+Version:		1.0
+Cabal-Version:		>= 1.2
+License:		GPL
+License-File:		license.txt
+Synopsis:		Unification and Matching in an Abelian Group 
+Build-Type:		Simple
+Extra-Source-Files:	Makefile
+
+Executable agum
+  Main-Is:		Algebra/AbelianGroup/Main.hs
+  Build-Depends:	base
+  GHC-Options:		
+    -O -Wall -fno-warn-name-shadowing -fwarn-unused-imports
