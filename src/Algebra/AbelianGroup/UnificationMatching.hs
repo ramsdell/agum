@@ -2,7 +2,8 @@
 -- John D. Ramsdell -- August 2009
 
 module Algebra.AbelianGroup.UnificationMatching 
-    (Lin, canonicalize, unify, match, Equation(..)) where
+    (Term, ide, var, mul, neg, add, assocs,
+     unify, match, Equation(..), Maplet(..)) where
 
 import Data.Char (isSpace, isAlpha, isAlphaNum, isDigit)
 import Data.List (sort)
@@ -50,35 +51,35 @@ import Data.List (sort)
 -- non-negative integers.  To make the code easier to understand,
 -- association lists are used instead of Data.Map.
 
-newtype Lin = Lin [(String, Int)]
+newtype Term = Term [(String, Int)]
 
 -- Constructors
 
 -- Identity element (zero)
-ide :: Lin
-ide = Lin []
+ide :: Term
+ide = Term []
 
 -- Variables
-var :: String -> Lin
-var x = Lin [(x, 1)]
+var :: String -> Term
+var x = Term [(x, 1)]
 
 -- Multiply coefficients
-mul :: Int -> Lin -> Lin
-mul 0 (Lin _) = ide
+mul :: Int -> Term -> Term
+mul 0 (Term _) = ide
 mul 1 t = t
-mul n (Lin t) = 
-    Lin $ map (\(x, c) -> (x, n * c)) t
+mul n (Term t) = 
+    Term $ map (\(x, c) -> (x, n * c)) t
 
 -- Invert by negating coefficients.
-neg :: Lin -> Lin
-neg (Lin t) =
-    Lin $ map (\(x, c) -> (x, negate c)) t
+neg :: Term -> Term
+neg (Term t) =
+    Term $ map (\(x, c) -> (x, negate c)) t
 
 -- Join terms ensuring that coefficients are non-zero, and no variable
 -- occurs twice.
-add :: Lin -> Lin -> Lin
-add (Lin t) (Lin t') =
-    Lin $ foldr f t' t
+add :: Term -> Term -> Term
+add (Term t) (Term t') =
+    Term $ foldr f t' t
     where
       f (x, c) t =
           case lookup x t of
@@ -93,25 +94,24 @@ remove x (y@(z, _) : ys)
        | x == z = ys
        | otherwise = y : remove x ys
 
-canonicalize :: Lin -> Lin
-canonicalize (Lin t) =
-    Lin (sort t)
+-- Convert a term into an association list.
+assocs :: Term -> [(String, Int)]
+assocs (Term t) = sort t
 
--- Convert a linearized term into an association list.
-assocs :: Lin -> [(String, Int)]
-assocs (Lin t) = t
-
-term :: [(String, Int)] -> Lin
+term :: [(String, Int)] -> Term
 term assoc =
     foldr f ide assoc
     where
       f (x, c) t = add t $ mul c $ var x
 
+instance Eq Term where
+    t0 == t1 = assocs t0 == assocs t1
+
 -- Unification and Matching
 
-newtype Equation = Equation (Lin, Lin)
+newtype Equation = Equation (Term, Term) deriving Eq
 
-newtype Maplet = Maplet (String, Lin)
+newtype Maplet = Maplet (String, Term) deriving Eq
 
 -- Unification is the same as matching when there are no constants
 unify :: Monad m => Equation -> m [Maplet]
@@ -318,13 +318,12 @@ divide small t =
 
 -- Input and Output
 
-instance Show Lin where
-    showsPrec _ (Lin []) =
-        showString "0"
-    showsPrec _ x =
-        showFactor t . showl ts
+instance Show Term where
+    showsPrec _ t =
+        case assocs t of
+          [] -> showString "0"
+          (t:ts) -> showFactor t . showl ts
         where
-          Lin (t:ts) = canonicalize x
           showFactor (x, 1) = showString x
           showFactor (x, -1) = showChar '-' . showString x
           showFactor (x, c) = shows c . showString x
@@ -334,7 +333,7 @@ instance Show Lin where
                   showString " - " . showFactor (s, negate n) . showl ts
           showl (t:ts) = showString " + " . showFactor t . showl ts
 
-instance Read Lin where
+instance Read Term where
     readsPrec _ s0 =
         [ (t1, s2)       | (t0, s1) <- readSummand s0,
                            (t1, s2) <- readRest t0 s1 ]
@@ -394,4 +393,10 @@ instance Read Equation where
 
 instance Show Maplet where
     showsPrec _ (Maplet (x, t)) =
-        showString x . showString " -> " . shows t
+        showString x . showString " = " . shows t
+
+instance Read Maplet where
+    readsPrec _ s0 =
+        [ (Maplet (x, t), s3) | (x, s1) <- scan s0, isVar x,
+                                ("=", s2) <- scan s1,
+                                (t, s3) <- reads s2 ]

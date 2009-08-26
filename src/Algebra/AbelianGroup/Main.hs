@@ -16,7 +16,7 @@ test prob =
       Ans (Equation (t0, t1)) ->
           do
             putStr "Problem:   "
-            print $ Equation (canonicalize t0, canonicalize t1)
+            print $ Equation (t0, t1)
             subst <- unify $ Equation (t0, t1)
             putStr "Unifier:   "
             print subst
@@ -60,15 +60,15 @@ loop =
             do
               putStrLn ""
               return ()
-        Just input | input == ":?" || input == ":help" ->
+        Just line | line == ":?" || line == ":help" ->
             do
               help
               loop
         Just ":quit" ->
             return ()
-        Just prob ->
+        Just line ->
             do
-              test prob
+              test line
               loop
 
 help :: IO ()
