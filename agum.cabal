@@ -3,12 +3,21 @@ Version:		1.0
 Cabal-Version:		>= 1.2
 License:		GPL
 License-File:		license.txt
-Synopsis:		Unification and Matching in an Abelian Group 
+Synopsis:		Unification and Matching in an Abelian Group
 Build-Type:		Simple
-Extra-Source-Files:	Makefile
+Extra-Source-Files:	readme.txt Makefile
+
+Library
+  Build-Depends:	base
+  Exposed-Modules:	Algebra.AbelianGroup.UnificationMatching
+  Hs-Source-Dirs:	src
+  GHC-Options:
+    -O -Wall -fno-warn-name-shadowing -fwarn-unused-imports
 
 Executable agum
   Main-Is:		Algebra/AbelianGroup/Main.hs
-  Build-Depends:	base
-  GHC-Options:		
+  Build-Depends:	base, readline
+  Other-Modules:	Algebra.AbelianGroup.UnificationMatching
+  Hs-Source-Dirs:	src
+  GHC-Options:
     -O -Wall -fno-warn-name-shadowing -fwarn-unused-imports
