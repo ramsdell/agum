@@ -1,9 +1,23 @@
--- A simple top-level loop for unification and matching in Abelian groups
--- John D. Ramsdell -- August 2009
+-- A top-level loop for unification and matching in Abelian groups
+--
+-- Copyright (C) 2009 John D. Ramsdell
+--
+-- This program is free software: you can redistribute it and/or modify
+-- it under the terms of the GNU General Public License as published by
+-- the Free Software Foundation, either version 3 of the License, or
+-- (at your option) any later version.
+
+-- This program is distributed in the hope that it will be useful,
+-- but WITHOUT ANY WARRANTY; without even the implied warranty of
+-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-- GNU General Public License for more details.
+
+-- You should have received a copy of the GNU General Public License
+-- along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 module Main (main, test) where
 
-import System.Console.Readline (readline)
+import System.Console.Readline (readline, addHistory)
 import Algebra.AbelianGroup.UnificationMatching
 
 -- Test Routine
@@ -68,6 +82,7 @@ loop =
             return ()
         Just line ->
             do
+              addHistory line
               test line
               loop
 
@@ -80,7 +95,12 @@ mesg =
     [ "Pose a question as an equation such as",
       "    2x + y = 3z, or",
       "    2x = x + y, or",
-      "    64x - 41y = 1a.",
+      "    64x - 41y = a.",
       "The agum programs shows the result of unification and matching.",
+      "",
+      "The unification problem is given two terms t and t', find a most",
+      "general unifier s such that s(t) = s(t').  The matching problem",
+      "for terms t and t' is to find a most general matcher s such that",
+      "s(t) = t'.",
       "",
       ":quit quits the program, :? and :help print this message."]

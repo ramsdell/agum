@@ -8,7 +8,7 @@ Build-Type:		Simple
 Extra-Source-Files:	readme.txt Makefile
 
 Library
-  Build-Depends:	base
+  Build-Depends:	base, containers
   Exposed-Modules:	Algebra.AbelianGroup.UnificationMatching
   Hs-Source-Dirs:	src
   GHC-Options:
@@ -16,7 +16,7 @@ Library
 
 Executable agum
   Main-Is:		Algebra/AbelianGroup/Main.hs
-  Build-Depends:	base, readline
+  Build-Depends:	base, containers, readline
   Other-Modules:	Algebra.AbelianGroup.UnificationMatching
   Hs-Source-Dirs:	src
   GHC-Options:
