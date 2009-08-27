@@ -17,7 +17,7 @@
 
 module Main (main, test) where
 
-import System.Console.Readline (readline, addHistory)
+import System.IO (isEOF, hFlush, stdout)
 import Algebra.AbelianGroup.UnificationMatching
 
 -- Test Routine
@@ -68,23 +68,28 @@ main =
 loop :: IO ()
 loop =
     do
-      maybeLine <- readline "agum> "
-      case maybeLine of
-        Nothing ->
+      putStr "agum> "
+      hFlush stdout
+      done <- isEOF
+      case done of
+        True ->
             do
               putStrLn ""
               return ()
-        Just line | line == ":?" || line == ":help" ->
+        False ->
             do
-              help
-              loop
-        Just ":quit" ->
-            return ()
-        Just line ->
-            do
-              addHistory line
-              test line
-              loop
+              line <- getLine
+              case () of
+                _ | line == ":?" || line == ":help" ->
+                      do
+                        help
+                        loop
+                  | line == ":quit" ->
+                      return ()
+                  | otherwise ->
+                      do
+                        test line
+                        loop
 
 help :: IO ()
 help =
