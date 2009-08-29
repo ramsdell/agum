@@ -1,0 +1,7 @@
+2009-08-29  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/Algebra/AbelianGroup/UnificationMatching.hs (Substitution,
+	apply): Hid the representation of a substitution and supplied a
+	function for applying a substitution to a term.
+
+	* agum.cabal (Version): Released as version 2.0.

@@ -1,5 +1,5 @@
 Name:			agum
-Version:		1.0
+Version:		2.0
 Maintainer:		ramsdell@mitre.org
 Cabal-Version:		>= 1.2
 License:		GPL
@@ -16,7 +16,7 @@ Description:            The unification problem is given the problem
 			s\" o s.
 Category:		Algebra.AbelianGroup
 Build-Type:		Simple
-Extra-Source-Files:	readme.txt Makefile
+Extra-Source-Files:	readme.txt ChangeLog Makefile
 
 Library
   Build-Depends:	base <= 4.1.0.0, containers

@@ -45,7 +45,7 @@
 -- [Cancellation] x + -x = 0
 --
 -- A substitution maps variables to terms.  A substitution s is
--- extended to a term as follows.
+-- applied to a term as follows.
 --
 --      * s(0) = 0
 --
@@ -64,8 +64,10 @@ module Algebra.AbelianGroup.UnificationMatching
     (
      -- * Terms
      Term, ide, isVar, var, mul, add, assocs,
+     -- * Equations and Substitutions
+     Equation(..), Substitution, subst, maplets, apply,
      -- * Unification and Matching
-     Equation(..), Maplet(..), unify, match) where
+     unify, match) where
 
 import Data.Char (isSpace, isAlpha, isAlphaNum, isDigit)
 import Data.Map (Map)
@@ -119,7 +121,7 @@ import qualified Data.Map as Map
 -- twice in a term.  For the show and read methods, zero is the group
 -- identity, the plus sign is the group operation, and the minus sign
 -- is the group inverse.
-newtype Term = Term (Map String Int)
+newtype Term = Term (Map String Int) deriving Eq
 
 -- Constructors
 
@@ -177,24 +179,42 @@ term assoc =
     where
       f (x, c) t = add t $ mul c $ var x
 
-instance Eq Term where
-    Term t0 == Term t1 = t0 == t1
-
--- Unification and Matching
+-- Equations and Substitutions
 
 -- | An equation is a pair of terms.  For the show and read methods,
 -- the two terms are separated by an equal sign.
 newtype Equation = Equation (Term, Term) deriving Eq
 
--- | A maplet maps one variable into a term.  For the show and read
--- methods, the variable and the term are separated by a colon.  A
--- list of maplets represents a substitution.
-newtype Maplet = Maplet (String, Term) deriving Eq
+-- | A substitution maps variables into terms.  For the show and read
+-- methods, the substitution is a list of maplets, and the variable
+-- and the term in each element of the list are separated by a colon.
+newtype Substitution = Substitution (Map String Term) deriving Eq
+
+-- | Construct a substitution from a list of variable-term pairs.
+subst :: [(String, Term)] -> Substitution
+subst assocs =
+    Substitution $ foldl f Map.empty assocs
+    where
+      f t (x, n) = Map.insert x n t
+
+-- | Return all variable-term pairs in ascending variable order.
+maplets :: Substitution -> [(String, Term)]
+maplets (Substitution s) = Map.assocs s
+
+-- | Return the result of applying a substitution to a term.
+apply :: Substitution -> Term -> Term
+apply (Substitution s) (Term t) =
+    Map.foldWithKey f ide t
+    where
+      f x n t =
+          add (mul n (Map.findWithDefault (var x) x s)) t
+
+-- Unification and Matching
 
 -- | Given 'Equation' (t0, t1), return a most general substitution s
 -- such that s(t0) = s(t1) modulo the equational axioms of an Abelian
 -- group.
-unify :: Monad m => Equation -> m [Maplet]
+unify :: Monad m => Equation -> m Substitution
 unify (Equation (t0, t1)) =
     match $ Equation (add t0 (neg t1), ide)
 
@@ -204,10 +224,10 @@ unify (Equation (t0, t1)) =
 -- | Given 'Equation' (t0, t1), return a most general substitution s
 -- such that s(t0) = t1 modulo the equational axioms of an Abelian
 -- group.
-match :: Monad m => Equation -> m [Maplet]
+match :: Monad m => Equation -> m Substitution
 match (Equation (t0, t1)) =
     case (assocs t0, assocs t1) of
-      ([], []) -> return []
+      ([], []) -> return $ Substitution Map.empty
       ([], _) -> fail "no solution"
       (t0, t1) ->
           do
@@ -217,16 +237,16 @@ match (Equation (t0, t1)) =
 -- Construct a most general unifier from a solution to a linear
 -- equation.  The function adds the variables back into terms, and
 -- generates fresh variables as needed.
-mgu :: [String] -> [String] -> Subst -> [Maplet]
+mgu :: [String] -> [String] -> Subst -> Substitution
 mgu vars syms subst =
-    foldr f [] (zip vars [0..])
+    Substitution $ foldl f Map.empty (zip vars [0..])
     where
-      f (x, n) maplets =
+      f s (x, n) =
           case lookup n subst of
             Just (factors, consts) ->
-                Maplet (x, g factors consts) : maplets
+                Map.insert x (g factors consts) s
             Nothing ->
-                Maplet (x, var $ genSyms !! n) : maplets
+                Map.insert x (var $ genSyms !! n) s
       g factors consts =
           term (zip genSyms factors ++ zip syms consts)
       genSyms = genSymsAvoiding vars syms
@@ -487,6 +507,10 @@ instance Read Equation where
                                     ("=", s2) <- scan s1,
                                     (t1, s3) <- reads s2 ]
 
+-- This datatype is used only in the read and show methods for
+-- substitutions.
+newtype Maplet = Maplet (String, Term) deriving Eq
+
 instance Show Maplet where
     showsPrec _ (Maplet (x, t)) =
         showString x . showString " : " . shows t
@@ -496,3 +520,13 @@ instance Read Maplet where
         [ (Maplet (x, t), s3) | (x, s1) <- scan s0, isVarToken x,
                                 (":", s2) <- scan s1,
                                 (t, s3) <- reads s2 ]
+
+instance Show Substitution where
+    showsPrec _ s =
+        shows $ map Maplet $ maplets s
+
+instance Read Substitution where
+    readsPrec _ s0 =
+        [ (subst $ map pair ms, s1) | (ms, s1) <- reads s0 ]
+        where
+          pair (Maplet (x, t)) = (x, t)
