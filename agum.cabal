@@ -14,7 +14,7 @@ Description:            The unification problem is given the problem
 			Substitition s is more general than s\' if
 			there is a substitition s\" such that s\' =
 			s\" o s.
-Category:		Algebra.AbelianGroup
+Category:		Algebra
 Build-Type:		Simple
 Extra-Source-Files:	readme.txt ChangeLog Makefile
 
