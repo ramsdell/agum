@@ -1,3 +1,9 @@
+2009-09-05  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/Algebra/AbelianGroup/UnificationMatching.hs:  Added
+	reference to Andrew Kennedy's Ph.D. thesis as in contains a proof
+	of correctness of the implemented matching algorithm.
+
 2009-08-29  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* src/Algebra/AbelianGroup/UnificationMatching.hs (Substitution,

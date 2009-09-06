@@ -308,16 +308,13 @@ type LinEq = ([Int], [Int])
 --
 --     c[0]*x[0] + c[1]*x[1] + ... + c[n-1]*x[n-1] = 0
 --
--- where n is the length of c.  Otherwise, (c, d) represents a
--- sequence of inhomogeneous linear equations with the same
--- left-hand-side:
+-- where n is the length of c.  Otherwise, (c, d) represents the
+-- inhomogeneous equation:
 --
---     c[0]*x[0] + c[1]*x[1] + ... + c[n-1]*x[n-1] = d[0]
---     c[0]*x[0] + c[1]*x[1] + ... + c[n-1]*x[n-1] = d[1]
---     ...
---     c[0]*x[0] + c[1]*x[1] + ... + c[n-1]*x[n-1] = d[m-1]
+--     c[0]*x[0] + c[1]*x[1] + ... + c[n-1]*x[n-1] = g
 --
--- where m is the length of d.
+-- where g = gcd(d[0], d[1], ..., d[m-1]), and m is the length of d.
+-- Thus g is the greatest common denominator of the elements of d.
 
 type Subst = [(Int, LinEq)]
 
@@ -431,6 +428,12 @@ divisible small t =
 divide :: Int -> [Int] -> [Int]
 divide small t =
     map (\x -> div x small) t
+
+-- Elementary Abelian group matching is equivalent to unification with
+-- constants.  A proof of correctness of this algorithm, cast as
+-- unification with constants, is in Chapter 3, Section 1 of
+-- "Programming Languages and Dimensions", Andrew Kennedy's
+-- Ph.D. thesis from St. Catharine's College in 1996.
 
 -- Input and Output
 
