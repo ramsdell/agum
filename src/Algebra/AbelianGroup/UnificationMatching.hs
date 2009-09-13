@@ -1,4 +1,4 @@
--- Unification and matching in Abelian groups
+-- Unification and matching in an Abelian group
 --
 -- Copyright (C) 2009 John D. Ramsdell
 --
@@ -113,7 +113,7 @@ import qualified Data.Map as Map
 -- factors.  A factor is the product of a non-zero integer coefficient
 -- and a variable.  In this representation, no variable occurs twice.
 -- Thus a term is represented by a finite map from variables to
--- non-negative integers.
+-- non-zero integers.
 
 -- | A term in an Abelian group is represented by the group identity
 -- element, or as the sum of factors.  A factor is the product of a
@@ -213,10 +213,12 @@ apply (Substitution s) (Term t) =
 
 -- | Given 'Equation' (t0, t1), return a most general substitution s
 -- such that s(t0) = s(t1) modulo the equational axioms of an Abelian
--- group.
-unify :: Monad m => Equation -> m Substitution
+-- group.  Unification always succeeds.
+unify :: Equation -> Substitution
 unify (Equation (t0, t1)) =
-    match $ Equation (add t0 (neg t1), ide)
+    case match $ Equation (add t0 (neg t1), ide) of
+      Nothing -> error "Internal error--unification failed"
+      Just s -> s
 
 -- Matching in Abelian groups is performed by finding integer
 -- solutions to linear equations, and then using the solutions to

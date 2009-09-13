@@ -31,7 +31,7 @@ test prob =
           do
             putStr "Problem:   "
             print $ Equation (t0, t1)
-            subst <- unify $ Equation (t0, t1)
+            let subst = unify $ Equation (t0, t1)
             putStr "Unifier:   "
             print subst
             putStr "Matcher:   "

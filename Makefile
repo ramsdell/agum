@@ -2,7 +2,7 @@
 # Requires GNU Make
 # The all target creates a default configuration if need be.
 
-PACKAGE = agum
+PACKAGE := $(wildcard *.cabal)
 CONFIG	= dist/setup-config
 SETUP	= runhaskell Setup.hs
 
@@ -12,10 +12,10 @@ all:	$(CONFIG)
 Makefile:
 	@echo make $@
 
-$(PACKAGE).cabal:
+$(PACKAGE):
 	@echo make $@
 
-$(CONFIG):	$(PACKAGE).cabal
+$(CONFIG):	$(PACKAGE)
 	$(SETUP) configure --ghc --user --prefix="${HOME}"
 
 %:	force

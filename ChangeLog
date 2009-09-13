@@ -1,3 +1,8 @@
+2009-09-13  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/Algebra/AbelianGroup/UnificationMatching.hs (unify): Changed
+	the result to be a substitution since unification always succeeds.
+
 2009-09-05  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* src/Algebra/AbelianGroup/UnificationMatching.hs:  Added
