@@ -21,6 +21,7 @@ Extra-Source-Files:	readme.txt ChangeLog Makefile
 Library
   Build-Depends:	base <= 4.1.0.0, containers
   Exposed-Modules:	Algebra.AbelianGroup.UnificationMatching
+                        Algebra.AbelianGroup.IntLinEq
   Hs-Source-Dirs:	src
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
@@ -29,6 +30,7 @@ Executable agum
   Main-Is:		Algebra/AbelianGroup/Main.hs
   Build-Depends:	base <= 4.1.0.0, containers
   Other-Modules:	Algebra.AbelianGroup.UnificationMatching
+                        Algebra.AbelianGroup.IntLinEq
   Hs-Source-Dirs:	src
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
