@@ -22,46 +22,95 @@
 --
 -- Integer Solutions of Linear Inhomogeneous Equations
 --
-
-module Algebra.AbelianGroup.IntLinEq
-    (LinEq, Subst, intLinEq) where
-
-type LinEq = ([Int], [Int])
-
 -- A linear equation with integer coefficients is represented as a
--- pair of lists of integers, the coefficients and the constants.  If
--- there are no constants, the linear equation represented by (c, [])
--- is the homogeneous equation:
+-- pair of lists of non-zero integers, the coefficients and the
+-- constants.  If there are no constants, the linear equation
+-- represented by (c, []) is the homogeneous equation:
 --
---     c[0]*x[0] + c[1]*x[1] + ... + c[n-1]*x[n-1] = 0
+-- >     c[0]*x[0] + c[1]*x[1] + ... + c[n-1]*x[n-1] = 0
 --
 -- where n is the length of c.  Otherwise, (c, d) represents the
 -- inhomogeneous equation:
 --
---     c[0]*x[0] + c[1]*x[1] + ... + c[n-1]*x[n-1] = g
+-- >     c[0]*x[0] + c[1]*x[1] + ... + c[n-1]*x[n-1] = g
 --
 -- where g = gcd(d[0], d[1], ..., d[m-1]), and m is the length of d.
 -- Thus g is the greatest common denominator of the elements of d.
-
-type Subst = [(Int, LinEq)]
-
+--
 -- A solution is a partial map from variables to terms, and a term is
 -- a pair of lists of integers, the variable part of the term followed
 -- by the constant part.  The variable part may specify variables not
--- in the input.  For example, the solution of
+-- in the input.  In other words, the length of the coefficents in the
+-- answer may exceed the length of the coefficients in the input.  For
+-- example, the solution of
 --
---     64x = 41y + 1
+-- >     64x - 41y = 1
 --
 -- is x = -41z - 16 and y = -64z - 25.  The computed solution is read
 -- off the list returned as an answer.
 --
--- intLinEq [64,-41] [1] =
---     [(0,([0,0,0,0,0,0,-41],[-16])),
---      (1,([0,0,0,0,0,0,-64],[-25]))]
+-- >     intLinEq [64,-41] [1] =
+-- >         [(0,([0,0,0,0,0,0,-41],[-16])),
+-- >         (1,([0,0,0,0,0,0,-64],[-25]))]
+--
+-- The algorithm used to find solutions is described in Vol. 2 of The
+-- Art of Computer Programming \/ Seminumerical Alorithms, 2nd Ed.,
+-- 1981, by Donald E. Knuth, pg. 327.  To show sums, we write
+--
+-- >     sum[i] c[i]*x[i] for c[0]*x[0] + c[1]*x[1] + ... + c[n-1]*x[n-1].
+--
+-- The algorithm's initial values are the linear equation (c,d) and an
+-- empty substitution s.
+--
+-- 1.  Let c[i] be the smallest non-zero coefficient in absolute value.
+--
+-- 2.  If c[i] < 0, multiply c and d by -1 and goto step 1.
+--
+-- 3.  If c[i] = 1, a general solution of the following form has been
+-- found:
+--
+-- >     x[i] = sum[j] -c'[j]*x[j] + d[k] for all k
+--
+--  where c' is c with c'[i] = 0.  Use the equation to eliminate x[i]
+--  from the range of the current substitution s.  If variable x[i] is
+--  in the original equation, add the mapping to substitution s.
+--
+-- 4.  If c[i] divides every coefficient in c,
+--
+--     * if c[i] divides every constant in d, divide c and d by c[i]
+--       and goto step 3,
+--
+--     * otherwise fail because there is no solution.
+--
+-- 5.  Otherwise, eliminate x[i] as above in favor of freshly created
+-- variable x[n], where n is the length of c.
+--
+-- >    x[n] = sum[j] (c[j] div c[i] * x[j])
+--
+-- Goto step 1 and solve the equation:
+--
+-- >    c[i]*x[n] + sum[j] (c[j] mod c[i])*x[j] = d[k] for all k
 
--- Find integer solutions to linear equations
-intLinEq :: Monad m => [Int] -> [Int] -> m Subst
-intLinEq coefficients constants =
+module Algebra.AbelianGroup.IntLinEq
+    (LinEq, Subst, intLinEq) where
+
+-- | A linear equation with integer coefficients is represented as a
+-- pair of lists of non-zero integers, the coefficients and the
+-- constants.
+type LinEq = ([Int], [Int])
+
+-- | A solution to a linear equation is a partial map from variables
+-- to terms, and a term is a pair of lists of integers, the variable
+-- part of the term followed by the constant part.  The variable part
+-- may specify variables not in the input.  In other words, the length
+-- of the coefficents in the answer may exceed the length of the
+-- coefficients in the input.
+type Subst = [(Int, LinEq)]
+
+-- | Find integer solutions to a linear equation or fail when there
+-- are no solutions.
+intLinEq :: Monad m => LinEq -> m Subst
+intLinEq (coefficients, constants) =
     intLinEqLoop (length coefficients) (coefficients, constants) []
 
 -- The algorithm used to find solutions is described in Vol. 2 of The

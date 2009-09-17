@@ -234,7 +234,7 @@ match (Equation (t0, t1)) =
       ([], _) -> fail "no solution"
       (t0, t1) ->
           do
-            subst <- intLinEq (map snd t0) (map snd t1)
+            subst <- intLinEq (map snd t0, map snd t1)
             return $ mgu (map fst t0) (map fst t1) subst
 
 -- Construct a most general unifier from a solution to a linear

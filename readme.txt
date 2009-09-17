@@ -1,5 +1,5 @@
 This package contains a library for unification and matching in
-Abelian groups and a program that exercises the library.
+an Abelian group and a program that exercises the library.
 
 $ agum
 Abelian group unification and matching -- :? for help
@@ -15,7 +15,7 @@ Matcher:   no solution
 
 agum> 64x-41y=a
 Problem:   64x - 41y = a
-Unifier:   [x : g0,y : g1,a : 64g0 - 41g1]
-Matcher:   [x : -16a - 41g6,y : -25]
+Unifier:   [a : 64g1 - 41g2,x : g1,y : g2]
+Matcher:   [x : -16a - 41g6,y : -25a - 64g6]
 
 agum> :quit

@@ -1,3 +1,7 @@
+2009-09-17  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* agum.cabal (Version): Released as version 2.2.
+
 2009-09-14  John D. Ramsdell  <ramsdell@.mitre.org>
 
 	* src/Algebra/AbelianGroup/IntLinEq.hs: Integer solutions to
