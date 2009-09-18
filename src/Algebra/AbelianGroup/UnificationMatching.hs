@@ -40,7 +40,7 @@
 --
 -- [Associativity] (x + y) + z = x + (y + z)
 --
--- [Group Identity] x + 0 = x
+-- [Identity Element] x + 0 = x
 --
 -- [Cancellation] x + -x = 0
 --
@@ -93,7 +93,7 @@ import Algebra.AbelianGroup.IntLinEq
 --
 -- * x + y = y + x                 Commutativity
 -- * (x + y) + z = x + (y + z)     Associativity
--- * x + 0 = x                     Group identity
+-- * x + 0 = x                     Identity Element
 -- * x + -x = 0                    Cancellation
 
 -- A substitution maps variables to terms.  A substitution s is
@@ -110,18 +110,18 @@ import Algebra.AbelianGroup.IntLinEq
 -- Substitition s is more general than s' if there is a substitition
 -- s" such that s' = s" o s.
 
--- A term is represented by the group identity, or as the sum of
+-- A term is represented by the identity element, or as the sum of
 -- factors.  A factor is the product of a non-zero integer coefficient
 -- and a variable.  In this representation, no variable occurs twice.
 -- Thus a term is represented by a finite map from variables to
 -- non-zero integers.
 
--- | A term in an Abelian group is represented by the group identity
+-- | A term in an Abelian group is represented by the identity
 -- element, or as the sum of factors.  A factor is the product of a
 -- non-zero integer coefficient and a variable.  No variable occurs
--- twice in a term.  For the show and read methods, zero is the group
--- identity, the plus sign is the group operation, and the minus sign
--- is the group inverse.
+-- twice in a term.  For the show and read methods, zero is the
+-- identity element, the plus sign is the group operation, and the
+-- minus sign is the group inverse.
 newtype Term = Term (Map String Int) deriving Eq
 
 -- Constructors
