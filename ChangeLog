@@ -1,10 +1,18 @@
-2013-02-21  John D. Ramsdell  <ramsdell@mitre.org>
+2012-02-29  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* agum.cabal (Version): Released as version 2.4.  Also,
+	constrained the containers package to be 0.3 or greater.
+
+	* src/Algebra/AbelianGroup/UnificationMatching.hs:  Replaced
+	occurrences of Data.Map.foldWithKey by Data.Map.foldrWithKey as
+	the former has been deprecated.
+
+2010-06-21  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* agum.cabal (Version): Released as version 2.3.
 
-	* agum.cabal (Location): Added repository location.
-
-	* agum.cabal (Build-Depends): Allowed base < 5.
+	* agum.cabal (Build-Depends): changes dependency to
+	base >= 3 && <5, containers
 
 2009-09-17  John D. Ramsdell  <ramsdell@mitre.org>
 

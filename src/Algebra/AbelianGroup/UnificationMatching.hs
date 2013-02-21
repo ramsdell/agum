@@ -158,7 +158,7 @@ neg (Term t) =
 -- | Add two terms.
 add :: Term -> Term -> Term
 add (Term t) (Term t') =
-    Term $ Map.foldWithKey f t' t -- Fold over the mappings in t
+    Term $ Map.foldrWithKey f t' t -- Fold over the mappings in t
     where
       f x c t =                 -- Alter the mapping of
           Map.alter (g c) x t   -- variable x in t
@@ -205,7 +205,7 @@ maplets (Substitution s) = Map.assocs s
 -- | Return the result of applying a substitution to a term.
 apply :: Substitution -> Term -> Term
 apply (Substitution s) (Term t) =
-    Map.foldWithKey f ide t
+    Map.foldrWithKey f ide t
     where
       f x n t =
           add (mul n (Map.findWithDefault (var x) x s)) t

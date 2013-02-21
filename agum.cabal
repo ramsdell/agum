@@ -1,5 +1,5 @@
 Name:			agum
-Version:		2.3
+Version:		2.4
 Maintainer:		ramsdell@mitre.org
 Cabal-Version:		>= 1.2
 License:		GPL
@@ -16,11 +16,10 @@ Description:            The unification problem is given the problem
 			s\" o s.
 Category:		Algebra
 Build-Type:		Simple
-Location:		git://github.com/ramsdell/agum.git
 Extra-Source-Files:	readme.txt ChangeLog Makefile
 
 Library
-  Build-Depends:	base >= 3 && < 5, containers
+  Build-Depends:	base >= 3 && < 5, containers >= 0.3
   Exposed-Modules:	Algebra.AbelianGroup.UnificationMatching
                         Algebra.AbelianGroup.IntLinEq
   Hs-Source-Dirs:	src
@@ -29,7 +28,7 @@ Library
 
 Executable agum
   Main-Is:		Algebra/AbelianGroup/Main.hs
-  Build-Depends:	base >= 3 && < 5, containers
+  Build-Depends:	base >= 3 && < 5, containers >= 0.3
   Other-Modules:	Algebra.AbelianGroup.UnificationMatching
                         Algebra.AbelianGroup.IntLinEq
   Hs-Source-Dirs:	src
