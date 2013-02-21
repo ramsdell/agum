@@ -1,7 +1,7 @@
 Name:			agum
-Version:		2.4
+Version:		2.5
 Maintainer:		ramsdell@mitre.org
-Cabal-Version:		>= 1.2
+Cabal-Version:		>= 1.6
 License:		GPL
 License-File:		license.txt
 Synopsis:		Unification and Matching in an Abelian Group
@@ -34,3 +34,7 @@ Executable agum
   Hs-Source-Dirs:	src
   GHC-Options:
     -Wall -fno-warn-name-shadowing -fwarn-unused-imports
+
+Source-Repository head
+  Type:			git
+  Location:		git://github.com/ramsdell/agum.git
