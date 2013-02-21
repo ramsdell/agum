@@ -1,3 +1,11 @@
+2013-02-21  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* agum.cabal (Version): Released as version 2.3.
+
+	* agum.cabal (Location): Added repository location.
+
+	* agum.cabal (Build-Depends): Allowed base < 5.
+
 2009-09-17  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* agum.cabal (Version): Released as version 2.2.
