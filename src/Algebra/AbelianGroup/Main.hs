@@ -51,6 +51,16 @@ data AnsErr a
     = Ans a
     | Err String
 
+instance Functor AnsErr where
+    fmap f (Ans a) = Ans (f a)
+    fmap _ (Err s) = Err s
+
+instance Applicative AnsErr where
+    pure = Ans
+    (Ans f) <*> (Ans a) = Ans (f a)
+    (Ans f) <*> (Err s) = Err s
+    (Err s) <*> _ = Err s
+
 instance Monad AnsErr where
     (Ans x) >>= k = k x
     (Err s) >>= _ = Err s
