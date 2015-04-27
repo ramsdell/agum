@@ -17,6 +17,7 @@
 
 module Main (main, test) where
 
+import Control.Applicative
 import System.IO (isEOF, hFlush, stdout)
 import Algebra.AbelianGroup.UnificationMatching
 
@@ -47,15 +48,25 @@ readM s =
       [] -> fail "no parse"
       _ -> fail "ambiguous parse"
 
+-- Like Either String but with fail method defined
 data AnsErr a
     = Ans a
     | Err String
+
+instance Functor (AnsErr) where
+    fmap _ (Err x) = Err x
+    fmap f (Ans y) = Ans (f y)
+
+instance Applicative (AnsErr) where
+    pure          = Ans
+    Err e <*> _ = Err e
+    Ans f <*> r = fmap f r
 
 instance Monad AnsErr where
     (Ans x) >>= k = k x
     (Err s) >>= _ = Err s
     return        = Ans
-    fail          = Err
+    fail          = Err         -- fail is Err
 
 -- Main loop
 

@@ -1,3 +1,9 @@
+2015-04-27  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/Algebra/AbelianGroup/Main.hs (AnsErr): Add Functor and
+	Applicative instance so that code compiles in GHC 7.10.  Thanks go
+	to Douglas McClean.
+
 2013-02-21  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* agum.cabal (Location): Added repository location.
