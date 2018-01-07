@@ -1,3 +1,8 @@
+2018-01-06  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* src/Algebra/AbelianGroup/Main.hs (readM): Adapted the code to
+	work when Monad no longer has a fail method.
+
 2015-04-27  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* src/Algebra/AbelianGroup/Main.hs (AnsErr): Added Functor and
