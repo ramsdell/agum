@@ -227,7 +227,7 @@ unify (Equation (t0, t1)) =
 -- | Given 'Equation' (t0, t1), return a most general substitution s
 -- such that s(t0) = t1 modulo the equational axioms of an Abelian
 -- group.
-match :: Monad m => Equation -> m Substitution
+match :: MonadFail m => Equation -> m Substitution
 match (Equation (t0, t1)) =
     case (assocs t0, assocs t1) of
       ([], []) -> return $ Substitution Map.empty

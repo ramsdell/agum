@@ -109,7 +109,7 @@ type Subst = [(Int, LinEq)]
 
 -- | Find integer solutions to a linear equation or fail when there
 -- are no solutions.
-intLinEq :: Monad m => LinEq -> m Subst
+intLinEq :: MonadFail m => LinEq -> m Subst
 intLinEq (coefficients, constants) =
     intLinEqLoop (length coefficients) (coefficients, constants) []
 
@@ -120,7 +120,7 @@ intLinEq (coefficients, constants) =
 -- On input, n is the number of variables in the original problem, c
 -- is the coefficients, d is the constants, and subst is a list of
 -- eliminated variables.
-intLinEqLoop :: Monad m => Int -> LinEq -> Subst -> m Subst
+intLinEqLoop :: MonadFail m => Int -> LinEq -> Subst -> m Subst
 intLinEqLoop n (c, d) subst =
     -- Find the smallest non-zero coefficient in absolute value
     let (i, ci) = smallest c in

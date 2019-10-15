@@ -17,7 +17,6 @@
 
 module Main (main, test) where
 
-import qualified Control.Monad.Fail as Fail
 import System.IO (isEOF, hFlush, stdout)
 import Algebra.AbelianGroup.UnificationMatching
 
@@ -41,12 +40,12 @@ test prob =
               Ans subst -> print subst
             putStrLn ""
 
-readM :: (Read a, Fail.MonadFail m) => String -> m a
+readM :: (Read a, MonadFail m) => String -> m a
 readM s =
     case [ x | (x, t) <- reads s, ("", "") <- lex t ] of
       [x] -> return x
-      [] -> Fail.fail "no parse"
-      _ -> Fail.fail "ambiguous parse"
+      [] -> fail "no parse"
+      _ -> fail "ambiguous parse"
 
 -- Like Either String but with fail method defined
 data AnsErr a
@@ -58,17 +57,16 @@ instance Functor (AnsErr) where
     fmap f (Ans y) = Ans (f y)
 
 instance Applicative (AnsErr) where
-    pure          = Ans
+    pure        = Ans
     Err e <*> _ = Err e
     Ans f <*> r = fmap f r
 
 instance Monad AnsErr where
-    (Ans x) >>= k = k x
-    (Err s) >>= _ = Err s
-    return        = Ans
+    Ans x >>= k = k x
+    Err s >>= _ = Err s
 
-instance Fail.MonadFail AnsErr where
-    fail          = Err         -- fail is Err
+instance MonadFail AnsErr where
+    fail        = Err         -- fail is Err
 
 -- Main loop
 

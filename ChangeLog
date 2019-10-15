@@ -1,3 +1,10 @@
+2019-10-15  John D. Ramsdell  <ramsdell@mitre.org>
+
+	* agum.cabal (Version): Released as version 2.8
+
+	* src/Algebra/AbelianGroup/Main.hs (AnsErr): Updated code to
+	support the MonadFail proposal as implenented in base-4.13.0.0.
+
 2018-01-06  John D. Ramsdell  <ramsdell@mitre.org>
 
 	* src/Algebra/AbelianGroup/Main.hs (readM): Adapted the code to
